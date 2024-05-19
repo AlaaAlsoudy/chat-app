@@ -4,8 +4,11 @@ import 'package:chaaaaaaaaaaaaaat/screens/registeration.dart';
 import 'package:chaaaaaaaaaaaaaat/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await GetStorage.init();
   runApp(const MyApp());
 }
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: ChatScreen.screenRoute,
+        initialRoute: WelcomeScreen.screenRoute,
         routes:{
           WelcomeScreen.screenRoute: (context) =>const WelcomeScreen(),
           LoginScreen.screenRoute: (context) =>const LoginScreen(),

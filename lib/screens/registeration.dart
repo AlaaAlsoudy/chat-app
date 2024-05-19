@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
-
 import '../widgets/my_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'chat.dart';
 import 'login.dart';
 
-class RegisterationScreen extends StatelessWidget {
+class RegisterationScreen extends StatefulWidget {
   static const String screenRoute='registeration_screen';
   const RegisterationScreen({super.key});
 
+  @override
+  State<RegisterationScreen> createState() => _RegisterationScreenState();
+}
+
+class _RegisterationScreenState extends State<RegisterationScreen> {
+  final _auth=FirebaseAuth.instance;
+
+  late String email;
+  late String password;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -26,9 +36,12 @@ class RegisterationScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 50,),
                 TextField(
+                  keyboardType: TextInputType.emailAddress,
                   textAlign: TextAlign.center,
                   //دا ياخد القيمة اللي اليوزر دخلها ويشتغل عليها
-                  onChanged: (value){},
+                  onChanged: (value){
+                    email=value;
+                  },
                   decoration: const InputDecoration(
                     hintText: 'Enter your email',
                     contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
@@ -50,9 +63,12 @@ class RegisterationScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10,),
                 TextField(
+                  obscureText: true,
                   textAlign: TextAlign.center,
                   //دا ياخد القيمة اللي اليوزر دخلها ويشتغل عليها
-                  onChanged: (value){},
+                  onChanged: (value){
+                    password=value;
+                  },
                   decoration: const InputDecoration(
                     hintText: 'Enter your password',
                     contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
@@ -72,12 +88,18 @@ class RegisterationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 MyButton(
                     color: Colors.blue[800]!,
                     title: 'Register',
-                    onPressed: (){
-                      Navigator.pushNamed(context, LoginScreen.screenRoute);
+                    onPressed: ()async{
+                      try{
+                       final newUser=await _auth.createUserWithEmailAndPassword(
+                           email: email, password: password);
+                       Navigator.pushNamed(context, ChatScreen.screenRoute);
+                     }catch(e){
+                       print(e);
+                     }
                     },
                 ),
               ],

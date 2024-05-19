@@ -89,11 +89,34 @@ class ChatScreen extends StatelessWidget {
 
 
 import 'package:flutter/material.dart';
-
-class ChatScreen extends StatelessWidget {
+import 'package:firebase_auth/firebase_auth.dart';
+class ChatScreen extends StatefulWidget {
   static const String screenRoute = 'chat_screen';
   const ChatScreen({super.key});
 
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final _auth=FirebaseAuth.instance;
+  late User signedInUser;
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+  void getCurrentUser(){
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        signedInUser = user;
+        print(signedInUser.email);
+      }
+    }catch(e){
+        print(e);
+    }
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -118,7 +141,8 @@ class ChatScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              //add logout function here
+              _auth.signOut();
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.close),
           ),

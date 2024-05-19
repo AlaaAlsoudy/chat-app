@@ -1,11 +1,20 @@
+import 'package:chaaaaaaaaaaaaaat/screens/chat.dart';
 import 'package:flutter/material.dart';
-
 import '../widgets/my_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static const String screenRoute='login_screen';
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+final _auth=FirebaseAuth.instance;
+late String email;
+late String password;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -25,9 +34,12 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 50,),
                 TextField(
+                  keyboardType: TextInputType.emailAddress,
                   textAlign: TextAlign.center,
                   //دا ياخد القيمة اللي اليوزر دخلها ويشتغل عليها
-                  onChanged: (value){},
+                  onChanged: (value){
+                    email=value;
+                  },
                   decoration: const InputDecoration(
                     hintText: 'Enter your email',
                     contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
@@ -49,9 +61,12 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10,),
                 TextField(
+                  obscureText: true,
                   textAlign: TextAlign.center,
                   //دا ياخد القيمة اللي اليوزر دخلها ويشتغل عليها
-                  onChanged: (value){},
+                  onChanged: (value){
+                    password=value;
+                  },
                   decoration: const InputDecoration(
                     hintText: 'Enter your password',
                     contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
@@ -75,7 +90,17 @@ class LoginScreen extends StatelessWidget {
                 MyButton(
                   color: Colors.yellow[900]!,
                   title: 'Sign in',
-                  onPressed: (){},
+                  onPressed: ()async{
+                    try {
+                      final user = await _auth.signInWithEmailAndPassword(
+                          email: email, password: password);
+                      if (user != null) {
+                        Navigator.pushNamed(context, ChatScreen.screenRoute);
+                      }
+                    }catch(e){
+                      print(e);
+                    }
+                  },
                 ),
               ],
             ),
